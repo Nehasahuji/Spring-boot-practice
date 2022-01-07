@@ -47,14 +47,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	}
 
-	protected void SucessfullAuthentication(HttpServletRequest request, HttpServletResponse responce, FilterChain chain,
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse responce, FilterChain chain,
 			Authentication auth) {
 
 		String userName = ((User) auth.getPrincipal()).getUsername();
 
 		String token = Jwts.builder().setSubject(userName)
 				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
-				.signWith(SignatureAlgorithm.HS512, SecurityConstant.TOCKEN_SECRET).compact();
+				.signWith(SignatureAlgorithm.HS512, SecurityConstant.getTockenSecret()).compact();
 
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
 		UserDto userDto = userService.getUser(userName);
