@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.dto.UserDto;
 import com.dto.Utils;
 import com.entity.UserEntity;
+import com.exception.UserServiceException;
+import com.modal.exceptions.ErrorMessage;
 import com.repository.UserRepository;
 import com.service.UserService;
 
@@ -90,4 +92,23 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
+	@Override
+	public UserDto updateUser(UserDto userdto, String userId) {
+
+		UserDto returnValue = new UserDto();
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if (userEntity == null)
+			throw new UserServiceException(ErrorMessage.NO_RECORD_FOUND.getErrorMessage());
+
+		userEntity.setFirstName(userdto.getFirstName());
+		userEntity.setLastName(userdto.getLastName());
+
+		UserEntity updatedUserDetails = userRepository.save(userEntity);
+
+		BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+		return returnValue;
+
+	}
 }
