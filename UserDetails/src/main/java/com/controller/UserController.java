@@ -16,6 +16,9 @@ import com.dto.UserDto;
 import com.exception.UserServiceException;
 import com.modal.exceptions.ErrorMessage;
 import com.modal.request.UserDetailsRequest;
+import com.modal.responce.OperationStatusModal;
+import com.modal.responce.RequestOperationName;
+import com.modal.responce.RequestOperationStatus;
 import com.modal.responce.UserRest;
 import com.service.UserService;
 
@@ -69,8 +72,12 @@ public class UserController {
 
 	}
 
-	@DeleteMapping
-	public String deleteUser() {
-		return "delete mapping is called";
+	@DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public OperationStatusModal deleteUser(@PathVariable String id) {
+		OperationStatusModal returnValue = new OperationStatusModal();
+		returnValue.setOperationName(RequestOperationName.DELETE.name());
+		userService.deleteUser(id);
+		returnValue.setOperationStatus(RequestOperationStatus.SUCESS.name());
+		return returnValue;
 	}
 }
